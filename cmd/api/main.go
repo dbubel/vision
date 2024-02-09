@@ -43,14 +43,19 @@ func (c *ServeCommand) Run(args []string) int {
 	app.Router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 	})
-	store, err := store.New(c.Log,c.Config.ReaderConnStr(),c.Config.WriterConnStr())
-  if err != nil {
-    c.Log.WithError(err).Error("error creating store")
-    return 1
-  }
+
+	store, err := store.New(c.Log, c.Config.ReaderConnStr(), c.Config.WriterConnStr())
+	fmt.Println(c.Config.ReaderConnStr(), c.Config.WriterConnStr())
+	if err != nil {
+		c.Log.WithError(err).Error("error creating store")
+		return 1
+	}
+
 	//==========================================================================================
-	contentAPI := handlers.NewApp(c.Config, c.Log, store)
-	app.AddEndpoint(http.MethodGet, "/health", contentAPI.Health)
+	visionAPI := handlers.NewApp(c.Config, c.Log, store)
+	endpoints := handlers.Endpoints(visionAPI)
+	app.AddEndpoints(endpoints)
+
 	app.Run(&http.Server{
 		Addr:           fmt.Sprintf(":%d", 3000),
 		Handler:        app.Router,

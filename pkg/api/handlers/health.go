@@ -7,14 +7,9 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func (c *App) CreateWorkspace(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+type Err map[string]interface{}
 
-}
-
-
-func (c *App) Health(
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) {
+func (c *App) Health(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intake.RespondJSON(w, r, http.StatusOK, "OK")
 	// intake.RespondJSON(w, r, http.StatusOK, struct {
 	// 	BuildTag     string `json:"buildTag"`
