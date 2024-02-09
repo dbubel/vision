@@ -1,0 +1,22 @@
+version: '2.1'
+
+services:
+  postgres:
+    image: ankane/pgvector
+    environment:
+      - POSTGRES_USER=postgres_root
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=visiondb
+    ports:
+      - "5432:5432"
+
+  migrate:
+    build: ./migrations/
+    environment:
+      - FLYWAY_URL=jdbc:postgresql://postgres:5432/visiondb
+      - FLYWAY_USER=postgres_root
+      - FLYWAY_PASSWORD=1234
+    depends_on:
+      - postgres
+
+

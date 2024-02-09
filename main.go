@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 	"time"
-	"github.com/dbubel/vision/config"
 	"github.com/dbubel/vision/cmd/api"
+	"github.com/dbubel/vision/config"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/mitchellh/cli"
 	"github.com/sirupsen/logrus"
@@ -61,4 +61,3 @@ func main() {
 		logrus.WithError(err).Fatalln("Error running serve command")
 	}
 }
-
