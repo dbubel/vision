@@ -57,6 +57,14 @@ func generateRandomString(length int) string {
 	return "vec_" + string(randomString)
 }
 
+func (s *Store) ValidateInsert(ctx context.Context, workspace, repoName string) (string, error) {
+	var wks string
+	return wks, s.DbReader.QueryRowx(
+		`select wvm.vector_table from workspaces w
+join workspace_vector_mappings wvm on w.id = wvm.workspace_id
+where w.name = $1 and wvm.name = $2;`, workspace, repoName).Scan(&wks)
+}
+
 func (s *Store) InsertVectors(ctx context.Context, tableName string, vectors requests.Vectors) error {
 	// pgvec col requires float32
 	// var embeddingsFloat32 []float32
@@ -66,7 +74,7 @@ func (s *Store) InsertVectors(ctx context.Context, tableName string, vectors req
 	// 	embeddingsFloat32[i] = float32(content.Embeddings[i])
 	// }
 	//
-	for _, i := range vectors {
+	for _, i := range vectors.Data {
 		query := fmt.Sprintf("INSERT INTO %s ( embedding) VALUES($1) ", tableName)
 		_, err := s.DbWriter.ExecContext(ctx, query, pgvector.NewVector(i))
 		if err != nil {

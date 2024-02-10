@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
-	"io"
 	"net/http"
 
 	"github.com/dbubel/intake"
@@ -13,9 +11,7 @@ import (
 
 func (c *App) InsertVector(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var newVectorRequest requests.Vectors
-	body, err := io.ReadAll(r.Body)
-	json.Unmarshal(body, &newVectorRequest)
-	// err := json.Marshaler(r.Body, &newVectorRequest)
+	err := validate.UnmarshalJSON(r.Body, &newVectorRequest)
 	if err != nil {
 		intake.RespondJSON(w, r, http.StatusBadRequest, Err{
 			"Error":       err.Error(),
@@ -23,7 +19,17 @@ func (c *App) InsertVector(w http.ResponseWriter, r *http.Request, _ httprouter.
 		})
 		return
 	}
-	err = c.DB.InsertVectors(r.Context(), "vec_285waarjusddapcf9gmreqo7h", newVectorRequest)
+
+	vecTable, err := c.DB.ValidateInsert(r.Context(), newVectorRequest.Workspace, newVectorRequest.VectorRepo)
+	if err != nil {
+		intake.RespondJSON(w, r, http.StatusBadRequest, Err{
+			"Error":       err.Error(),
+			"Description": "workspace repo not found",
+		})
+		return
+	}
+
+	err = c.DB.InsertVectors(r.Context(), vecTable, newVectorRequest)
 	if err != nil {
 		intake.RespondJSON(w, r, http.StatusBadRequest, Err{
 			"Error":       err.Error(),
