@@ -8,6 +8,7 @@ import (
 	"github.com/dbubel/intake"
 	"github.com/dbubel/vision/config"
 	"github.com/dbubel/vision/pkg/api/handlers"
+	"github.com/dbubel/vision/pkg/middleware"
 	"github.com/dbubel/vision/store"
 	"github.com/sirupsen/logrus"
 )
@@ -30,7 +31,7 @@ func (c *ServeCommand) Run(args []string) int {
 
 	// Init the app api
 	app := intake.New(c.Log)
-
+	app.AddGlobalMiddleware(middleware.Logging(c.Log))
 	// Handle CORS for OPTIONS requests
 	app.Router.GlobalOPTIONS = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")

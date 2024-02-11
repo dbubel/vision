@@ -24,7 +24,7 @@ func (c *App) InsertVector(w http.ResponseWriter, r *http.Request, _ httprouter.
 	if err != nil {
 		intake.RespondJSON(w, r, http.StatusBadRequest, Err{
 			"Error":       err.Error(),
-			"Description": "workspace repo not found",
+			"Description": "workspace repo pair not found",
 		})
 		return
 	}
@@ -38,7 +38,7 @@ func (c *App) InsertVector(w http.ResponseWriter, r *http.Request, _ httprouter.
 		return
 	}
 
-	intake.Respond(w, r, http.StatusCreated, []byte("ok"))
+	intake.Respond(w, r, http.StatusAccepted, nil)
 }
 
 func (c *App) CreateRepo(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -67,6 +67,22 @@ func (c *App) CreateRepo(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		})
 		return
 	}
-
+	// s, err := c.DB.GetIndexListSize(res.VectorTable)
+	// if err != nil {
+	// 	intake.RespondJSON(w, r, http.StatusBadRequest, Err{
+	// 		"Error":       err.Error(),
+	// 		"Description": "error getting index size",
+	// 	})
+	// 	return
+	// }
+	//
+	// err = c.DB.CreateIndex(r.Context(), res.VectorTable, s)
+	// if err != nil {
+	// 	intake.RespondJSON(w, r, http.StatusBadRequest, Err{
+	// 		"Error":       err.Error(),
+	// 		"Description": "error creating index",
+	// 	})
+	// 	return
+	// }
 	intake.RespondJSON(w, r, http.StatusCreated, res)
 }
