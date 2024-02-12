@@ -8,9 +8,9 @@ func Endpoints(visionAPI *App) intake.Endpoints {
 	endpoints := intake.Endpoints{
 		intake.POST("/api/v1/workspaces", visionAPI.CreateWorkspace),
 		intake.POST("/api/v1/workspaces/repos", visionAPI.CreateRepo),
-		intake.POST("/api/v1/workspaces/vectors", visionAPI.InsertVector),
+		intake.POST("/api/v1/workspaces/repos/vectors", visionAPI.InsertVector),
 
-		intake.GET("/api/v1/search", visionAPI.Search),
+		intake.GET("/api/v1/workspaces/repos/vectors/search", visionAPI.Search),
 		intake.GET("/health", visionAPI.Health),
 	}
 

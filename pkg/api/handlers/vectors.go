@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
-	"io"
 	"net/http"
 
 	"github.com/dbubel/intake"
@@ -13,9 +11,7 @@ import (
 
 func (c *App) InsertVector(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var newVectorRequest requests.Vectors
-	// err := validate.UnmarshalJSON(r.Body, &newVectorRequest)
-	b, _ := io.ReadAll(r.Body)
-	err := json.Unmarshal(b, &newVectorRequest)
+	err := validate.UnmarshalJSON(r.Body, &newVectorRequest)
 	if err != nil {
 		intake.RespondJSON(w, r, http.StatusBadRequest, Err{
 			"Error":       err.Error(),

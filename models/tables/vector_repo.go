@@ -1,6 +1,8 @@
 package tables
 
-import "time"
+import (
+	"time"
+)
 
 type VectorRepo struct {
 	ID          int       `db:"id"`
